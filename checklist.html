@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Name Change Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6EFDD;
+    --paper-deep:#ECE1C4;
+    --card:#FBF7EC;
+    --rule:#DCCEA3;
+    --rule-strong:#C7B98A;
+    --ink:#292620;
+    --ink-soft:#665F4E;
+    --navy:#C1592F;
+    --navy-deep:#9A4423;
+    --stamp:#C1592F;
+    --gold:#9A4423;
+    --complete:#59654A;
+    --complete-bg:#E7EBDE;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', -apple-system, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .page{
+    max-width:760px;
+    margin:0 auto;
+    padding:36px 20px 80px;
+  }
+
+  /* ---------- MASTHEAD ---------- */
+  .masthead{
+    border:1px solid var(--rule);
+    border-radius:2px;
+    background:var(--card);
+    padding:28px 28px 22px;
+    position:relative;
+    box-shadow:4px 4px 0 rgba(41,38,32,0.06);
+  }
+  .eyebrow{
+    font-family:'Courier Prime', monospace;
+    font-size:11.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+  }
+  h1{
+    font-family:'Public Sans', sans-serif;
+    font-weight:700;
+    font-size:clamp(26px,5vw,36px);
+    letter-spacing:-0.01em;
+    margin:10px 0 6px;
+  }
+  .subhead{
+    color:var(--ink-soft);
+    font-size:15px;
+    max-width:56ch;
+    margin:0;
+  }
+
+  .case-row{
+    margin-top:18px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    border-top:1px dashed var(--rule-strong);
+    padding-top:14px;
+    flex-wrap:wrap;
+  }
+  .seal{
+    width:58px;height:58px;border-radius:50%;
+    border:2px solid var(--navy);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Courier Prime',monospace;
+    font-weight:700;
+    font-size:15px;
+    color:var(--navy);
+    flex:none;
+    transition:border-color .3s, color .3s;
+  }
+  .seal.done{border-color:var(--complete);color:var(--complete);}
+  .case-meta{font-family:'Courier Prime',monospace;font-size:12.5px;color:var(--ink-soft);}
+  .case-meta b{color:var(--ink);}
+  .progress-track{
+    flex:1;min-width:160px;
+    height:8px;background:var(--rule);
+    border:1px solid var(--rule-strong);
+    position:relative;overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;background:var(--navy);width:0%;
+    transition:width .4s ease;
+  }
+
+  /* ---------- INTAKE FORM ---------- */
+  .form-card{
+    margin-top:32px;
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:2px;
+    box-shadow:3px 3px 0 rgba(41,38,32,0.05);
+    padding:30px 28px;
+  }
+  .form-card.collapsed .form-body{display:none;}
+  .form-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    cursor:pointer;
+  }
+  .form-title{
+    font-family:'Courier Prime',monospace;
+    font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .edit-link{
+    font-family:'Courier Prime',monospace;
+    font-size:12px;color:var(--navy);
+    background:none;border:none;cursor:pointer;text-decoration:underline;
+    padding:0;
+  }
+  .form-body{margin-top:16px;}
+  .field{margin-bottom:20px;}
+  .field-label{
+    font-family:'Courier Prime',monospace;
+    font-size:13px;
+    display:flex;gap:8px;
+    margin-bottom:9px;
+    color:var(--ink);
+  }
+  .field-label .num{color:var(--navy);font-weight:700;}
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .pill{
+    font-family:'Public Sans';
+    font-size:14px;
+    padding:8px 15px;
+    border:1.5px solid var(--rule-strong);
+    border-radius:2px;
+    background:transparent;
+    cursor:pointer;
+    color:var(--ink);
+    transition:all .15s;
+  }
+  .pill:hover{border-color:var(--navy);}
+  .pill.active{
+    background:var(--navy);border-color:var(--navy);color:#fff;
+  }
+  select{
+    font-family:'Public Sans';
+    font-size:14px;
+    padding:9px 12px;
+    border:1.5px solid var(--rule-strong);
+    background:var(--card);
+    color:var(--ink);
+    width:100%;max-width:320px;
+  }
+  .generate-btn{
+    font-family:'Public Sans';font-weight:600;
+    font-size:15px;
+    background:var(--navy);color:#fff;border:none;border-radius:2px;
+    padding:14px 24px;cursor:pointer;
+    margin-top:6px;
+    transition:background .15s;
+  }
+  .generate-btn:hover{background:var(--navy-deep);}
+  .generate-btn:disabled{background:var(--rule-strong);cursor:not-allowed;}
+  .hint{font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+
+  /* ---------- LOCATOR BAR ---------- */
+  .locator-bar{
+    margin-top:24px;
+    display:none;
+    gap:10px;flex-wrap:wrap;
+  }
+  .locator-bar.show{display:flex;}
+  .locator-chip{
+    font-family:'Courier Prime',monospace;
+    font-size:12px;
+    color:var(--navy-deep);
+    border:1px solid var(--navy);
+    border-radius:2px;
+    padding:8px 12px;
+    text-decoration:none;
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--card);
+  }
+  .locator-chip:hover{background:var(--navy);color:#fff;}
+
+  /* ---------- CHECKLIST ---------- */
+  .checklist{margin-top:30px;display:none;}
+  .checklist.show{display:block;}
+  .phase{margin-bottom:8px;}
+  .phase-title{
+    font-family:'Courier Prime',monospace;
+    font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--navy-deep);
+    display:flex;align-items:center;gap:10px;
+    margin:34px 0 4px;
+  }
+  .phase-title::after{content:"";flex:1;height:1px;background:var(--rule-strong);}
+  .phase-note{font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;}
+
+  .step{
+    display:flex;gap:14px;
+    padding:16px 4px;
+    border-bottom:1px solid var(--rule);
+    position:relative;
+    transition:background .2s;
+  }
+  .step.checked{background:var(--complete-bg);}
+
+  .stamp-box{
+    flex:none;width:46px;height:46px;
+    border:2px solid var(--ink);
+    background:var(--card);
+    cursor:pointer;
+    position:relative;
+    display:flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .stamp-box:hover{border-color:var(--navy);}
+  .stamp-mark{
+    position:absolute;
+    font-family:'Courier Prime',monospace;
+    font-weight:700;
+    font-size:10px;
+    letter-spacing:.03em;
+    color:var(--stamp);
+    border:2px solid var(--stamp);
+    padding:2px 4px;
+    opacity:0;
+    transform:scale(1.6) rotate(0deg);
+    pointer-events:none;
+    white-space:nowrap;
+  }
+  .step.checked .stamp-mark{
+    opacity:.9;
+    animation:stamp-down .28s ease-out;
+  }
+  @keyframes stamp-down{
+    0%{opacity:0;transform:scale(2.2) rotate(0deg);}
+    60%{opacity:1;transform:scale(0.85) rotate(var(--tilt));}
+    100%{opacity:.9;transform:scale(1) rotate(var(--tilt));}
+  }
+
+  .step-body{flex:1;min-width:0;}
+  .step-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline;}
+  .step-title{font-weight:600;font-size:15.5px;}
+  .step.checked .step-title{color:var(--complete);}
+  .step-time{
+    font-family:'Courier Prime',monospace;
+    font-size:11.5px;color:var(--ink-soft);white-space:nowrap;
+  }
+  .step-agency{
+    font-family:'Courier Prime',monospace;
+    font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--navy);margin-top:2px;
+  }
+  .step-desc{font-size:14px;color:var(--ink-soft);margin-top:7px;max-width:60ch;}
+  .step-dep{
+    font-size:12px;color:var(--gold);margin-top:7px;
+    font-family:'Courier Prime',monospace;
+  }
+  .step-links{margin-top:9px;display:flex;gap:14px;flex-wrap:wrap;}
+  .step-links a{
+    font-size:12.5px;color:var(--navy);text-decoration:none;
+    border-bottom:1px solid var(--navy);
+  }
+  .step-links a:hover{color:var(--navy-deep);border-color:var(--navy-deep);}
+
+  /* ---------- FOOTER ACTIONS ---------- */
+  .actions{
+    margin-top:34px;display:none;gap:12px;flex-wrap:wrap;
+  }
+  .actions.show{display:flex;}
+  .btn-ghost{
+    font-family:'Courier Prime',monospace;font-size:12.5px;
+    background:none;border:1px solid var(--rule-strong);
+    padding:10px 16px;cursor:pointer;color:var(--ink-soft);
+  }
+  .btn-ghost:hover{border-color:var(--ink);color:var(--ink);}
+
+  .note-box{
+    margin-top:26px;
+    border-left:3px solid var(--gold);
+    border-radius:0 2px 2px 0;
+    background:var(--card);
+    padding:16px 18px;
+    font-size:13.5px;color:var(--ink-soft);
+    display:none;
+  }
+  .note-box.show{display:block;}
+  .note-box b{color:var(--ink);}
+
+  footer{
+    margin-top:50px;text-align:center;font-size:11.5px;color:var(--ink-soft);
+    font-family:'Courier Prime',monospace;
+  }
+
+  @media print{
+    body{background:#fff;}
+    .form-card,.locator-bar,.actions,.generate-btn{display:none !important;}
+    .step{break-inside:avoid;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .stamp-mark{animation:none !important;}
+  }
+
+  /* ---------- NAV ---------- */
+  nav.topnav{
+    position:sticky;top:0;z-index:20;
+    background:rgba(246,239,221,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--rule);
+  }
+  nav.topnav .inner{
+    max-width:760px;margin:0 auto;padding:14px 20px;
+    display:flex;align-items:center;gap:10px;
+  }
+  nav.topnav a.brand{
+    display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);
+  }
+  .brand-mark{
+    width:26px;height:26px;border:2px solid var(--navy);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--navy);font-family:'Courier Prime',monospace;font-weight:700;font-size:11px;
+    flex:none;
+  }
+  nav.topnav .brand-name{font-family:'Courier Prime',monospace;font-weight:700;font-size:13.5px;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">NC</span>
+      <span class="brand-name">Name Change Navigator</span>
+    </a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="masthead">
+    <div class="eyebrow"><span>Personal Records &middot; Self-Filed</span><span id="today"></span></div>
+    <h1>Name Change Navigator</h1>
+    <p class="subhead">A personalized, ordered checklist for legally changing your name in the U.S. — built from your situation, not a generic list.</p>
+    <div class="case-row">
+      <div class="seal" id="seal">0%</div>
+      <div style="flex:1;min-width:160px;">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="case-meta" style="margin-top:6px;" id="caseMeta">No checklist generated yet</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card" id="formCard">
+    <div class="form-head" id="formHead">
+      <span class="form-title">Intake — tell us your situation</span>
+      <button class="edit-link" id="editToggle" style="display:none;">Edit answers</button>
+    </div>
+
+    <div class="form-body" id="formBody">
+      <div class="field">
+        <div class="field-label"><span class="num">1.</span> Why are you changing your name?</div>
+        <div class="pill-row" data-group="reason">
+          <button class="pill" data-value="marriage">Marriage</button>
+          <button class="pill" data-value="divorce">Divorce</button>
+          <button class="pill" data-value="court">Court order / personal choice</button>
+          <button class="pill" data-value="gender">Gender-affirming</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="num">2.</span> Which state do you live in?</div>
+        <select id="stateSelect"><option value="">Select a state&hellip;</option></select>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="num">3.</span> Do you have a U.S. passport?</div>
+        <div class="pill-row" data-group="passport">
+          <button class="pill" data-value="yes">Yes</button>
+          <button class="pill" data-value="no">No</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="num">4.</span> Do you own a car?</div>
+        <div class="pill-row" data-group="car">
+          <button class="pill" data-value="yes">Yes</button>
+          <button class="pill" data-value="no">No</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="num">5.</span> Are you currently employed?</div>
+        <div class="pill-row" data-group="employed">
+          <button class="pill" data-value="yes">Yes</button>
+          <button class="pill" data-value="no">No</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="num">6.</span> Housing situation?</div>
+        <div class="pill-row" data-group="housing">
+          <button class="pill" data-value="own">Own</button>
+          <button class="pill" data-value="rent">Rent</button>
+          <button class="pill" data-value="neither">Neither</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="num">7.</span> Do you hold a professional license (nursing, law, real estate, etc.)?</div>
+        <div class="pill-row" data-group="license">
+          <button class="pill" data-value="yes">Yes</button>
+          <button class="pill" data-value="no">No</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="num">8.</span> Do you have Global Entry, TSA PreCheck, or a military ID?</div>
+        <div class="pill-row" data-group="travel">
+          <button class="pill" data-value="yes">Yes</button>
+          <button class="pill" data-value="no">No</button>
+        </div>
+      </div>
+
+      <button class="generate-btn" id="generateBtn" disabled>Build my checklist &rarr;</button>
+      <div class="hint">Nothing you enter here leaves your device — answers are stored locally to this tool.</div>
+    </div>
+  </div>
+
+  <div class="locator-bar" id="locatorBar">
+    <a class="locator-chip" href="https://www.ssa.gov/locator" target="_blank" rel="noopener">&#8599; Find your Social Security office</a>
+    <a class="locator-chip" href="https://www.usa.gov/state-motor-vehicle-services" target="_blank" rel="noopener">&#8599; Find your state DMV</a>
+    <a class="locator-chip" id="clerkChip" href="#" target="_blank" rel="noopener">&#8599; Find your county clerk</a>
+  </div>
+
+  <div class="note-box" id="irsNote">
+    <b>Good to know:</b> the IRS doesn't need a separate form. Once Social Security updates its records, your name syncs there automatically. Filing a tax return before that sync finishes is the single most common cause of delayed refunds — so hold off on filing until your new Social Security card is confirmed.
+  </div>
+
+  <div class="checklist" id="checklist"></div>
+
+  <div class="actions" id="actions">
+    <button class="btn-ghost" onclick="window.print()">Print / save as PDF</button>
+    <button class="btn-ghost" id="resetBtn">Start over</button>
+  </div>
+
+  <footer>Built with public info from usa.gov, ssa.gov &amp; travel.state.gov &middot; not legal advice</footer>
+</div>
+
+<script>
+const STATES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
+const stateSelect = document.getElementById('stateSelect');
+STATES.forEach(s=>{
+  const o=document.createElement('option');
+  o.value=s; o.textContent=s;
+  stateSelect.appendChild(o);
+});
+document.getElementById('today').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+let answers = { reason:null, state:null, passport:null, car:null, employed:null, housing:null, license:null, travel:null };
+let checkedSteps = {};
+
+// ---- pill handling ----
+document.querySelectorAll('.pill-row').forEach(row=>{
+  const group = row.dataset.group;
+  row.addEventListener('click', e=>{
+    const btn = e.target.closest('.pill');
+    if(!btn) return;
+    [...row.children].forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    answers[group] = btn.dataset.value;
+    checkFormComplete();
+  });
+});
+stateSelect.addEventListener('change', ()=>{ answers.state = stateSelect.value || null; checkFormComplete(); });
+
+function checkFormComplete(){
+  const required = ['reason','state','passport','car','employed','housing','license','travel'];
+  const complete = required.every(k=>answers[k]);
+  document.getElementById('generateBtn').disabled = !complete;
+}
+
+// ---- step library ----
+function buildSteps(a){
+  const phases = [];
+
+  // PHASE 1
+  let p1title, p1desc;
+  if(a.reason==='marriage'){
+    p1title = 'Get certified copies of your marriage certificate';
+    p1desc = "Order 5–10 certified copies (not photocopies) from the county clerk where you were married. Almost every step below needs an original.";
+  } else if(a.reason==='divorce'){
+    p1title = 'Get certified copies of your divorce decree';
+    p1desc = "Make sure your decree explicitly restores or changes your name — if it doesn't, you'll need a separate court petition. Order several certified copies.";
+  } else {
+    p1title = 'File your petition for a legal name change';
+    p1desc = "File a petition with your local circuit or county court. Depending on your state, you may need to publish a notice and attend a short hearing before a judge signs the order. Order several certified copies of the signed order once it's granted.";
+  }
+  phases.push({
+    title:'Phase 1 — Get your proof',
+    note:'Do this first. Nothing else can start without it.',
+    steps:[{
+      id:'proof', title:p1title, agency: a.reason==='marriage' ? 'County Clerk / Vital Records' : 'County or Circuit Court',
+      time: a.reason==='marriage' ? '1–2 weeks after the ceremony' : (a.reason==='divorce' ? '2–6 weeks' : '4–12 weeks, varies by court'),
+      desc:p1desc, dep:null,
+      links:[{label:'Overview at usa.gov', url:'https://www.usa.gov/name-change'}]
+    }]
+  });
+
+  // PHASE 2
+  const p2steps = [];
+  p2steps.push({
+    id:'ssa', title:'Update your Social Security card', agency:'Social Security Administration (SSA)',
+    time:'2–4 weeks by mail, often same-day online',
+    desc:'This is the record almost everything else checks against — do it before the DMV or passport office. File Form SS-5 or apply online with your proof from Phase 1.',
+    dep:'After: your Phase 1 document',
+    links:[{label:'How to update your SSA card',url:'https://www.ssa.gov/faqs/en/questions/KA-01981.html'},{label:'Find an SSA office',url:'https://www.ssa.gov/locator'}]
+  });
+  p2steps.push({
+    id:'dmv', title:"Get an updated driver's license or state ID", agency:'State DMV',
+    time:'Varies by state — many require an appointment',
+    desc:'Give SSA about 10 business days to update federal records before you apply, or your DMV visit may get bounced.',
+    dep:'After: Social Security',
+    links:[{label:'Find your state DMV',url:'https://www.usa.gov/state-motor-vehicle-services'}]
+  });
+  if(a.car==='yes'){
+    p2steps.push({
+      id:'vehicle', title:'Update your vehicle title and registration', agency:'State DMV / County Tax Office',
+      time:'Same visit as your license in most states',
+      desc:"Bring your updated license — most states will update your vehicle records in the same transaction.",
+      dep:'After: driver\'s license',
+      links:[]
+    });
+  }
+  p2steps.push({
+    id:'passport', title: a.passport==='yes' ? 'Update your existing passport' : 'Apply for your first passport (optional)',
+    agency:'U.S. Department of State',
+    time:'Several weeks standard; expedited service available for a fee',
+    desc: a.passport==='yes'
+      ? 'If your passport was issued within the last year, you may qualify for a free update using Form DS-82. Otherwise it\'s treated as a new application.'
+      : "Not urgent if you don't travel internationally, but easiest to knock out while your other documents are freshly updated.",
+    dep:'After: Social Security and driver\'s license',
+    links:[{label:'Passport name change process',url:'https://travel.state.gov/en/passports/renew-replace/change-correct-passport.html'}]
+  });
+  if(a.license==='yes'){
+    p2steps.push({
+      id:'proflicense', title:'Update your professional license', agency:'Your state licensing board',
+      time:'Varies widely by profession and state',
+      desc:'Contact your board directly — requirements differ a lot between fields like nursing, law, real estate, and teaching.',
+      dep:'After: Social Security and driver\'s license',
+      links:[]
+    });
+  }
+  if(a.travel==='yes'){
+    p2steps.push({
+      id:'tsa', title:'Update Global Entry / TSA PreCheck / military ID', agency:'TSA / DoD',
+      time:'A few days online',
+      desc:'Update your Trusted Traveler profile online so your boarding pass name matches your ID — mismatches can flag you at security.',
+      dep:'After: passport or driver\'s license',
+      links:[{label:'TSA PreCheck',url:'https://www.tsa.gov/precheck'}]
+    });
+  }
+  phases.push({title:'Phase 2 — Core government ID', note:'Do these roughly in order — each one unlocks the next.', steps:p2steps});
+
+  // PHASE 3
+  const p3steps = [];
+  if(a.employed==='yes'){
+    p3steps.push({id:'employer', title:'Notify your employer & update payroll', agency:'HR / Payroll',
+      time:'One conversation + paperwork', desc:"Give HR your new Social Security card so your paychecks and W-2 match your legal name — a mismatch can hold up your tax filing.",
+      dep:'After: Social Security', links:[]});
+  }
+  p3steps.push({id:'voter', title:'Update your voter registration', agency:'State Election Office',
+    time:'A few minutes online', desc:'Takes minutes online and keeps your registration from getting flagged at the polls.', dep:null,
+    links:[{label:'Update your registration',url:'https://www.usa.gov/change-voter-registration'}]});
+  p3steps.push({id:'bank', title:'Update banks & credit cards', agency:'Your financial institutions',
+    time:'A branch visit or online request per account', desc:'Bring your new ID and Social Security card, or use each bank\'s online request form.', dep:null, links:[]});
+  p3steps.push({id:'insurance', title:'Update your insurance policies', agency:'Health, auto, life & renters/home insurers',
+    time:'A phone call or online update per policy', desc:"A name mismatch on a policy can complicate a claim later — worth doing even if it feels low priority now.", dep:null, links:[]});
+  if(a.housing==='own'){
+    p3steps.push({id:'mortgage', title:'Update your mortgage & property records', agency:'Lender / County Property Records',
+      time:'Varies', desc:'Contact your lender and your county property records office so your deed and tax records match.', dep:null, links:[]});
+  } else if(a.housing==='rent'){
+    p3steps.push({id:'lease', title:'Notify your landlord or property manager', agency:'Landlord / Property Manager',
+      time:'One email', desc:'Worth doing before your next lease renewal so the paperwork matches.', dep:null, links:[]});
+  }
+  p3steps.push({id:'retirement', title:'Update retirement & investment accounts', agency:'401(k), IRA, brokerage providers',
+    time:'Online update per account', desc:'Keeps beneficiary designations and tax forms consistent with your legal name.', dep:null, links:[]});
+  p3steps.push({id:'medical', title:'Update medical providers & pharmacy', agency:'Doctors, dentist, pharmacy, insurance ID cards',
+    time:'Ongoing as you visit each provider', desc:'Keeps your prescriptions and records under one identity.', dep:null, links:[]});
+  p3steps.push({id:'everyday', title:'Update everyday accounts', agency:'Subscriptions, loyalty programs, email & LinkedIn',
+    time:'Whenever you think of it', desc:'The least urgent step, but the one that makes the change feel finished.', dep:null, links:[]});
+
+  phases.push({title:'Phase 3 — Everyday life', note:'These can happen in any order once your ID and Social Security card are updated.', steps:p3steps});
+
+  return phases;
+}
+
+function stepCount(phases){
+  let n=0; phases.forEach(p=>n+=p.steps.length); return n;
+}
+
+function render(){
+  const phases = buildSteps(answers);
+  const list = document.getElementById('checklist');
+  list.innerHTML = '';
+  phases.forEach(phase=>{
+    const pDiv = document.createElement('div');
+    pDiv.className='phase';
+    pDiv.innerHTML = `<div class="phase-title">${phase.title}</div><div class="phase-note">${phase.note}</div>`;
+    phase.steps.forEach((s, idx)=>{
+      const tilt = ((s.id.charCodeAt(0)*7 + idx*13) % 10) - 5;
+      const checked = !!checkedSteps[s.id];
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step' + (checked ? ' checked':'');
+      stepDiv.style.setProperty('--tilt', tilt+'deg');
+      stepDiv.innerHTML = `
+        <div class="stamp-box" data-id="${s.id}">
+          <span class="stamp-mark">DONE</span>
+        </div>
+        <div class="step-body">
+          <div class="step-top">
+            <span class="step-title">${s.title}</span>
+            <span class="step-time">${s.time}</span>
+          </div>
+          <div class="step-agency">${s.agency}</div>
+          <div class="step-desc">${s.desc}</div>
+          ${s.dep ? `<div class="step-dep">${s.dep}</div>` : ''}
+          ${s.links.length ? `<div class="step-links">${s.links.map(l=>`<a href="${l.url}" target="_blank" rel="noopener">${l.label} &rarr;</a>`).join('')}</div>` : ''}
+        </div>`;
+      pDiv.appendChild(stepDiv);
+    });
+    list.appendChild(pDiv);
+  });
+
+  document.querySelectorAll('.stamp-box').forEach(box=>{
+    box.addEventListener('click', ()=>{
+      const id = box.dataset.id;
+      checkedSteps[id] = !checkedSteps[id];
+      persist();
+      render();
+      updateProgress();
+    });
+  });
+
+  list.classList.add('show');
+  document.getElementById('actions').classList.add('show');
+  document.getElementById('locatorBar').classList.add('show');
+  document.getElementById('irsNote').classList.add('show');
+
+  const clerkUrl = 'https://www.google.com/search?q=county+clerk+vital+records+office+near+' + encodeURIComponent(answers.state || '');
+  document.getElementById('clerkChip').href = clerkUrl;
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const phases = buildSteps(answers);
+  const total = stepCount(phases);
+  const done = Object.values(checkedSteps).filter(Boolean).length;
+  const pct = total ? Math.round((done/total)*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('seal').textContent = pct+'%';
+  document.getElementById('seal').classList.toggle('done', pct===100);
+  const reasonLabel = {marriage:'Marriage',divorce:'Divorce',court:'Court order',gender:'Gender-affirming'}[answers.reason] || '';
+  document.getElementById('caseMeta').innerHTML = `<b>${done} of ${total}</b> steps complete &middot; ${reasonLabel} &middot; ${answers.state || ''}`;
+}
+
+function persist(){
+  try{
+    window.storage && window.storage.set('namechange:v1', JSON.stringify({answers, checkedSteps}), false);
+  }catch(e){ /* storage unavailable, continue silently */ }
+}
+
+async function restore(){
+  try{
+    const res = await window.storage.get('namechange:v1', false);
+    if(res && res.value){
+      const data = JSON.parse(res.value);
+      answers = Object.assign(answers, data.answers);
+      checkedSteps = data.checkedSteps || {};
+      // reflect answers into UI
+      document.querySelectorAll('.pill-row').forEach(row=>{
+        const group = row.dataset.group;
+        [...row.children].forEach(btn=>{
+          if(btn.dataset.value === answers[group]) btn.classList.add('active');
+        });
+      });
+      if(answers.state) stateSelect.value = answers.state;
+      checkFormComplete();
+      const required = ['reason','state','passport','car','employed','housing','license','travel'];
+      if(required.every(k=>answers[k])){
+        render();
+        collapseForm();
+      }
+    }
+  }catch(e){ /* nothing saved yet */ }
+}
+
+function collapseForm(){
+  document.getElementById('formCard').classList.add('collapsed');
+  document.getElementById('editToggle').style.display='inline';
+}
+
+document.getElementById('generateBtn').addEventListener('click', ()=>{
+  persist();
+  render();
+  collapseForm();
+});
+
+document.getElementById('editToggle').addEventListener('click', ()=>{
+  document.getElementById('formCard').classList.remove('collapsed');
+  document.getElementById('editToggle').style.display='none';
+});
+document.getElementById('formHead').addEventListener('click', (e)=>{
+  if(document.getElementById('formCard').classList.contains('collapsed')){
+    document.getElementById('formCard').classList.remove('collapsed');
+    document.getElementById('editToggle').style.display='none';
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(!confirm('Clear your answers and progress? This can\'t be undone.')) return;
+  answers = { reason:null, state:null, passport:null, car:null, employed:null, housing:null, license:null, travel:null };
+  checkedSteps = {};
+  document.querySelectorAll('.pill.active').forEach(p=>p.classList.remove('active'));
+  stateSelect.value='';
+  document.getElementById('checklist').classList.remove('show');
+  document.getElementById('actions').classList.remove('show');
+  document.getElementById('locatorBar').classList.remove('show');
+  document.getElementById('irsNote').classList.remove('show');
+  document.getElementById('formCard').classList.remove('collapsed');
+  document.getElementById('editToggle').style.display='none';
+  checkFormComplete();
+  updateProgress();
+  try{ window.storage && window.storage.delete('namechange:v1', false); }catch(e){}
+});
+
+restore();
+</script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Name Change Navigator — Every step, in the right order</title>
+<meta name="description" content="A personalized, ordered checklist for legally changing your name after marriage, divorce, or court order — with links straight to the official forms.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F6EFDD;
+    --cream-deep:#ECE1C4;
+    --card:#FBF7EC;
+    --rule:#DCCEA3;
+    --charcoal:#292620;
+    --charcoal-soft:#665F4E;
+    --terracotta:#C1592F;
+    --terracotta-deep:#9A4423;
+    --sage:#748263;
+    --sage-deep:#59654A;
+    --sage-bg:#E7EBDE;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--charcoal);
+    font-family:'Public Sans', -apple-system, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--terracotta);}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+  .mono{font-family:'Courier Prime', monospace;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:20;
+    background:rgba(246,239,221,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--rule);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--charcoal);}
+  .brand-mark{
+    width:30px;height:30px;border:2px solid var(--terracotta);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--terracotta);font-family:'Courier Prime',monospace;font-weight:700;font-size:13px;
+    flex:none;
+  }
+  .brand-name{font-family:'Courier Prime',monospace;font-weight:700;font-size:15px;letter-spacing:.01em;}
+  .nav-links{display:flex;align-items:center;gap:26px;}
+  .nav-links a{color:var(--charcoal-soft);text-decoration:none;font-size:14.5px;font-weight:500;}
+  .nav-links a:hover{color:var(--terracotta);}
+  .nav-cta{
+    background:var(--terracotta);color:#fff !important;
+    padding:9px 18px;border-radius:2px;font-weight:600;font-size:14px;
+  }
+  .nav-cta:hover{background:var(--terracotta-deep);}
+  @media (max-width:640px){ .nav-links a:not(.nav-cta){display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{padding:76px 0 60px;}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
+  @media (max-width:860px){ .hero .wrap{grid-template-columns:1fr;} }
+  .eyebrow{
+    font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--sage-deep);margin-bottom:14px;
+  }
+  h1{
+    font-size:clamp(32px,5vw,50px);line-height:1.08;margin:0 0 18px;
+    letter-spacing:-0.01em;
+  }
+  h1 em{font-style:normal;color:var(--terracotta);}
+  .hero p{font-size:17px;color:var(--charcoal-soft);max-width:46ch;margin:0 0 28px;}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--terracotta);color:#fff;text-decoration:none;
+    padding:14px 24px;font-weight:600;font-size:15px;border-radius:2px;
+    display:inline-block;
+  }
+  .btn-primary:hover{background:var(--terracotta-deep);}
+  .btn-secondary{
+    background:transparent;color:var(--charcoal);text-decoration:none;
+    padding:14px 24px;font-weight:600;font-size:15px;border-radius:2px;
+    border:1.5px solid var(--rule);display:inline-block;
+  }
+  .btn-secondary:hover{border-color:var(--charcoal);}
+
+  /* hero illustration: scattered paperwork motif */
+  .hero-art{position:relative;height:340px;}
+  .art-card{
+    position:absolute;background:var(--card);border:1px solid var(--rule);
+    box-shadow:4px 4px 0 rgba(41,38,32,0.06);
+  }
+  .card1{width:190px;height:130px;top:10px;left:10px;transform:rotate(-7deg);padding:16px;}
+  .card2{width:170px;height:110px;top:120px;left:150px;transform:rotate(5deg);padding:14px;background:var(--sage-bg);}
+  .card3{width:150px;height:150px;top:60px;right:0;transform:rotate(3deg);padding:16px;display:flex;align-items:center;justify-content:center;}
+  .art-line{height:6px;background:var(--rule);margin-bottom:8px;border-radius:1px;}
+  .art-line.short{width:60%;}
+
+  .stamp-circle{
+    width:96px;height:96px;border-radius:50%;
+    border:3px solid var(--terracotta);color:var(--terracotta);
+    display:flex;align-items:center;justify-content:center;flex-direction:column;
+    font-family:'Courier Prime',monospace;font-weight:700;font-size:11px;letter-spacing:.06em;
+    transform:rotate(-10deg);
+    animation:stampIn .5s ease-out .3s both;
+  }
+  @keyframes stampIn{
+    0%{opacity:0;transform:scale(1.8) rotate(-10deg);}
+    60%{opacity:1;transform:scale(0.92) rotate(-10deg);}
+    100%{opacity:1;transform:scale(1) rotate(-10deg);}
+  }
+  .stamp-circle .big{font-size:20px;line-height:1;margin-bottom:2px;}
+
+  /* ---------- STAT / PROBLEM STRIP ---------- */
+  .strip{background:var(--charcoal);color:var(--cream);padding:36px 0;}
+  .strip .wrap{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .strip p{margin:0 18px 0 0;font-size:14.5px;color:#D9D2BE;flex:none;}
+  .chip{
+    font-family:'Courier Prime',monospace;font-size:12.5px;
+    border:1px solid #57503F;padding:6px 12px;border-radius:20px;color:#EADFC2;
+  }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .section{padding:76px 0;}
+  .section-head{max-width:56ch;margin-bottom:44px;}
+  .section-head .eyebrow{margin-bottom:10px;}
+  h2{font-size:clamp(24px,3.4vw,32px);margin:0 0 12px;}
+  .section-head p{color:var(--charcoal-soft);font-size:15.5px;margin:0;}
+
+  .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+  @media (max-width:760px){ .steps-grid{grid-template-columns:1fr;} }
+  .step-card{background:var(--card);border:1px solid var(--rule);padding:26px 22px;}
+  .step-icon{width:44px;height:44px;margin-bottom:16px;}
+  .step-card h3{font-size:17px;margin:0 0 8px;}
+  .step-card p{font-size:14.5px;color:var(--charcoal-soft);margin:0;}
+  .step-num{
+    font-family:'Courier Prime',monospace;font-size:12px;color:var(--terracotta);
+    margin-bottom:6px;letter-spacing:.08em;
+  }
+
+  /* ---------- TRUST NOTE ---------- */
+  .trust{background:var(--sage-bg);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:50px 0;}
+  .trust .wrap{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap;}
+  .trust-icon{flex:none;width:52px;height:52px;}
+  .trust h3{margin:0 0 8px;font-size:18px;}
+  .trust p{margin:0;color:var(--charcoal-soft);font-size:14.5px;max-width:62ch;}
+  .trust p a{color:var(--sage-deep);font-weight:600;}
+
+  /* ---------- EMAIL CAPTURE ---------- */
+  .capture{padding:80px 0;}
+  .capture-box{
+    background:var(--charcoal);color:var(--cream);
+    padding:44px 40px;border-radius:2px;
+    display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center;
+  }
+  @media (max-width:760px){ .capture-box{grid-template-columns:1fr;} }
+  .capture-box h2{color:#fff;margin-bottom:10px;}
+  .capture-box p{color:#C9C2AC;font-size:14.5px;margin:0;}
+  form.capture-form{display:flex;gap:10px;flex-wrap:wrap;}
+  form.capture-form input[type=email]{
+    flex:1;min-width:180px;padding:13px 14px;border:none;border-radius:2px;
+    font-family:'Public Sans';font-size:14.5px;
+  }
+  form.capture-form button{
+    background:var(--terracotta);color:#fff;border:none;padding:13px 20px;
+    font-weight:600;font-size:14.5px;border-radius:2px;cursor:pointer;
+  }
+  form.capture-form button:hover{background:var(--terracotta-deep);}
+  .form-note{font-size:12px;color:#8F8874;margin-top:8px;}
+
+  .capture-msg{font-size:14px;padding:10px 12px;border-radius:2px;margin-bottom:10px;}
+  .capture-msg:empty{display:none;}
+  .capture-msg.success{background:#3A4A31;color:#DCE7CC;}
+  .capture-msg.error{background:#5A2E22;color:#F3D9CC;}
+  .field-error{display:block;font-size:12px;color:#E8A98B;margin-top:4px;}
+  input[aria-invalid="true"]{outline:2px solid #C1592F;outline-offset:1px;}
+  button[data-fs-submit-btn]:disabled{opacity:0.6;cursor:not-allowed;}
+
+  footer{padding:36px 0 60px;border-top:1px solid var(--rule);}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;}
+  footer p{margin:0;font-size:12.5px;color:var(--charcoal-soft);font-family:'Courier Prime',monospace;}
+  footer .foot-links a{color:var(--charcoal-soft);text-decoration:none;font-size:12.5px;margin-left:16px;}
+  footer .foot-links a:hover{color:var(--terracotta);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#" class="brand">
+      <span class="brand-mark">NC</span>
+      <span class="brand-name">Name Change Navigator</span>
+    </a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#trust">Why trust us</a>
+      <a href="checklist.html" class="nav-cta">Start my checklist</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Marriage &middot; Divorce &middot; Court order</div>
+      <h1>Change your name without <em>losing</em> a month to it.</h1>
+      <p>A personalized checklist that puts every step in the right order — Social Security before the DMV, the DMV before your passport — with direct links to the real forms, not another blog post.</p>
+      <div class="hero-ctas">
+        <a href="checklist.html" class="btn-primary">Build my checklist &rarr;</a>
+        <a href="#how" class="btn-secondary">See how it works</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="art-card card1">
+        <div class="art-line"></div><div class="art-line"></div><div class="art-line short"></div>
+      </div>
+      <div class="art-card card2">
+        <div class="art-line"></div><div class="art-line short"></div>
+      </div>
+      <div class="art-card card3">
+        <div class="stamp-circle"><span class="big">&#10003;</span>DONE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="wrap">
+    <p>Everyone ends up updating the same 15 things:</p>
+    <span class="chip">Social Security</span>
+    <span class="chip">DMV</span>
+    <span class="chip">Passport</span>
+    <span class="chip">Bank</span>
+    <span class="chip">Employer</span>
+    <span class="chip">Insurance</span>
+    <span class="chip">Voter registration</span>
+    <span class="chip">+ more</span>
+  </div>
+</div>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">How it works</div>
+      <h2>Three steps, not fifteen tabs.</h2>
+      <p>You answer a handful of questions once. We handle the sequencing, the forms, and the "wait, do I need this yet?" guesswork.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <svg class="step-icon" viewBox="0 0 44 44" fill="none"><rect x="6" y="4" width="32" height="36" rx="1" stroke="#C1592F" stroke-width="2"/><line x1="13" y1="14" x2="31" y2="14" stroke="#C1592F" stroke-width="2"/><line x1="13" y1="21" x2="31" y2="21" stroke="#C1592F" stroke-width="2"/><line x1="13" y1="28" x2="24" y2="28" stroke="#C1592F" stroke-width="2"/></svg>
+        <div class="step-num">01</div>
+        <h3>Answer 8 questions</h3>
+        <p>Your reason for changing your name, your state, and a few things about your life — passport, car, job, housing.</p>
+      </div>
+      <div class="step-card">
+        <svg class="step-icon" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="17" stroke="#748263" stroke-width="2"/><path d="M14 22l6 6 12-13" stroke="#748263" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="step-num">02</div>
+        <h3>Get your ordered checklist</h3>
+        <p>Grouped into three phases, with the real dependency logic built in — no more guessing what has to happen first.</p>
+      </div>
+      <div class="step-card">
+        <svg class="step-icon" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="#C1592F" stroke-width="2" stroke-dasharray="3 4"/><text x="22" y="27" text-anchor="middle" font-family="Courier Prime" font-size="11" fill="#C1592F" font-weight="700">73%</text></svg>
+        <div class="step-num">03</div>
+        <h3>Stamp your way through it</h3>
+        <p>Check things off as you go, come back anytime — your progress is saved automatically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="trust" id="trust">
+  <div class="wrap">
+    <svg class="trust-icon" viewBox="0 0 52 52" fill="none"><rect x="6" y="6" width="40" height="40" rx="2" stroke="#59654A" stroke-width="2"/><path d="M16 26l7 7 14-15" stroke="#59654A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div>
+      <h3>Every link goes to the actual government page.</h3>
+      <p>No affiliate maze, no "recommended partner" upsells. Steps link directly to <a href="https://www.ssa.gov" target="_blank" rel="noopener">ssa.gov</a>, <a href="https://www.usa.gov" target="_blank" rel="noopener">usa.gov</a>, and <a href="https://travel.state.gov" target="_blank" rel="noopener">travel.state.gov</a>. We built the sequencing and the checklist; the agencies still handle your paperwork.</p>
+    </div>
+  </div>
+</div>
+
+<section class="capture">
+  <div class="wrap">
+    <div class="capture-box">
+      <div>
+        <h2>Not ready to start today?</h2>
+        <p>Get a link to your checklist by email so it's easy to pick back up — no account, no spam, unsubscribe anytime.</p>
+      </div>
+      <div>
+        <div class="capture-msg success" data-fs-success></div>
+        <div class="capture-msg error" data-fs-error></div>
+        <form class="capture-form" id="capture-form">
+          <input type="email" id="capture-email" name="email" data-fs-field placeholder="you@email.com" required>
+          <span class="field-error" data-fs-error="email"></span>
+          <button type="submit" data-fs-submit-btn>Email it to me</button>
+        </form>
+        <div class="form-note">No spam, unsubscribe anytime.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#capture-form', formId: 'maewdoyk' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; 2026 Name Change Navigator &middot; Not legal advice</p>
+    <div class="foot-links">
+      <a href="checklist.html">Start checklist</a>
+      <a href="#trust">Sources</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
