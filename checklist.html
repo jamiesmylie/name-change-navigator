@@ -657,17 +657,19 @@ function updateProgress(){
   }
 }
 
+const STORAGE_KEY = 'namechange:v1';
+
 function persist(){
   try{
-    window.storage && window.storage.set('namechange:v1', JSON.stringify({answers, checkedSteps}), false);
-  }catch(e){ /* storage unavailable, continue silently */ }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({answers, checkedSteps}));
+  }catch(e){ /* private mode or storage full — continue without saving */ }
 }
 
-async function restore(){
+function restore(){
   try{
-    const res = await window.storage.get('namechange:v1', false);
-    if(res && res.value){
-      const data = JSON.parse(res.value);
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const data = JSON.parse(raw);
       answers = Object.assign(answers, data.answers);
       checkedSteps = data.checkedSteps || {};
       // reflect answers into UI
@@ -685,7 +687,7 @@ async function restore(){
         collapseForm();
       }
     }
-  }catch(e){ /* nothing saved yet */ }
+  }catch(e){ /* nothing saved or unreadable — start fresh */ }
 }
 
 function summaryLine(){
@@ -735,7 +737,7 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
   expandForm();
   checkFormComplete();
   updateProgress();
-  try{ window.storage && window.storage.delete('namechange:v1', false); }catch(e){}
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
 });
 
 restore();
